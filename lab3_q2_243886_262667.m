@@ -27,18 +27,23 @@
 %pulsos (um de -1 a 0 e outro de 0 a 1) e relacionando-os à conhecida
 %resposta em frequência do degrau unitário. Com o uso da ferramenta
 %computacional, pudemos confirmar a simetria par no módulo da resposta em
-%frequência e a simetria ímpar na fase.
+%frequência e a simetria ímpar na fase. A reconstrução do sinal validou
+%nossa resolução analítica; o sinal original, por ter mudanças bruscas em
+%seus valores, necessita de muitos coeficientes e de muitas amostras para
+%ser reconstruído. Cem amostras nos mostram que a reconstrução converge
+%para o sinal original, porém mais amostras são necessárias para um
+%resultado mais satisfatório.
 
 
 figure
-w = -20:0.001:20;
-plot(w,abs(X2(w)));
+w = -20:0.001:20; %Range escolhido para melhor visualizar as propriedades
+plot(w,abs(X2(w))); %Simetria par
 title('Representação dos módulos coeficientes da Transformada de Fourier');
 xlabel('$\omega$','Interpreter','LaTex');
 ylabel('$\left| X(j\omega ) \right| $','Interpreter','LaTex');
 
 figure
-plot(w,angle(X2(w)));
+plot(w,angle(X2(w))); %Simetria ímpar
 title('Representação das fases dos coeficientes da Transformada de Fourier');
 xlabel('$\omega$','Interpreter','LaTex');
 ylabel('$arg\{ X(j\omega )\}  $','Interpreter','LaTex');
@@ -54,19 +59,55 @@ subplot(1,3,1);
 
 %x(t) = 1/(2pi)*Int(-inf,inf)(X(jw)*exp(jwt)*dw)
 %Cálculo iterativo da integral
-w = linspace(-5,5,100);
+w = linspace(-50,50,10); %Escolhido um range dos 100 coeficientes de forma simétrica
 inversa = [];
-for t = -5:0.001:5
+for t = -5:0.01:5
     integral = 0;
-    for i = w
-        integral = integral + X2(i).*exp(j*i*t);
+    for i=1:length(w)
+        integral = integral + X2(w(i)).*exp(j*w(i)*t)*(w(2)-w(1)); %w2 - w1 = dw (cte)
     end
     inversa = [inversa, 1/(2*pi)*integral];
 end
     
-t = -5:0.001:5;      
+t = -5:0.01:5;      
 plot(t,inversa);
 title('Reconstrução do sinal com 10 amostras');
 xlabel('t')
 ylabel('${x}_{2}(t)$','Interpreter','LaTex');
 
+
+subplot(1,3,2);
+
+w = linspace(-50,50,20);
+inversa = [];
+for t = -5:0.01:5
+    integral = 0;
+    for i=1:length(w)
+        integral = integral + X2(w(i)).*exp(j*w(i)*t)*(w(2)-w(1));
+    end
+    inversa = [inversa, 1/(2*pi)*integral];
+end
+    
+t = -5:0.01:5;      
+plot(t,inversa);
+title('Reconstrução do sinal com 20 amostras');
+xlabel('t')
+ylabel('${x}_{2}(t)$','Interpreter','LaTex');
+
+subplot(1,3,3);
+
+w = linspace(-50,50,100);
+inversa = [];
+for t = -5:0.01:5
+    integral = 0;
+    for i=1:length(w)
+        integral = integral + X2(w(i)).*exp(j*w(i)*t)*(w(2)-w(1));
+    end
+    inversa = [inversa, 1/(2*pi)*integral];
+end
+    
+t = -5:0.01:5;      
+plot(t,inversa); %Converge para o sinal original
+title('Reconstrução do sinal com 100 amostras');
+xlabel('t')
+ylabel('${x}_{2}(t)$','Interpreter','LaTex');

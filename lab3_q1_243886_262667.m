@@ -21,13 +21,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Conclusão: como o sinal é contínuo e períodico, sua representação no domínio da
 %frequência será discreta e não periódica. Analisamos, este caso - pelos
-%mesmos motivos anteriormente apresentados - através da Série de Fourier.
+%mesmos motivos anteriormente apresentados - através da Série de Fourier. A
+%resolução analítica foi validada com a reconstrução do sinal; por este ser
+%periódico e com um formato simples, a reconstrução foi alcançada de forma
+%satisfatória com as 100 amostras propostas.
 clc
 clear all
 
 k = -5:5;
 
 figure
+%Pelo fato da transformada ser um sinal real, pudemos representá-lo em um
+%único gráfico
 stem(k,X1(k))
 xlabel('t')
 ylabel('${X}_{1}(t)$','Interpreter','LaTex');
@@ -41,9 +46,9 @@ w = pi;
 subplot(1,3,1)
 
 inversa = [];
-for t = -5:0.001:5;
+for t = -5:0.001:5; %O(n²)
     soma = 0;
-    for k = -5:5
+    for k = -5:5 %Utilizamos as 10 amostras de forma simétrica
         soma = soma + X1(k)*exp(j*k*w*t);
     end
     inversa = [inversa soma];
